@@ -1,0 +1,661 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Safe area insets for notched devices */
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+:root {
+  --background: #fafbfc;
+  --foreground: #1c2128;
+  --card: #ffffff;
+  --card-foreground: #1c2128;
+  --popover: #ffffff;
+  --popover-foreground: #1c2128;
+  --primary: #0969da;
+  --primary-foreground: #ffffff;
+  --secondary: #656d76;
+  --secondary-foreground: #ffffff;
+  --muted: #f6f8fa;
+  --muted-foreground: #656d76;
+  --accent: #ddf4ff;
+  --accent-foreground: #0969da;
+  --destructive: #d1242f;
+  --destructive-foreground: #ffffff;
+  --border: #d0d7de;
+  --input: #ffffff;
+  --ring: #0969da;
+  --chart-1: #0969da;
+  --chart-2: #1a7f37;
+  --chart-3: #bf8700;
+  --chart-4: #8250df;
+  --chart-5: #cf222e;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1c2128;
+  --sidebar-primary: #0969da;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ddf4ff;
+  --sidebar-accent-foreground: #0969da;
+  --sidebar-border: #d0d7de;
+  --sidebar-ring: #0969da;
+  --radius: 0.8rem;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+  font-family: var(--font-sans);
+}
+
+/* Support for dynamic viewport units and safe areas */
+@supports (height: 100dvh) {
+  :root {
+    --vh: 1dvh;
+  }
+}
+
+@supports not (height: 100dvh) {
+  :root {
+    --vh: 1vh;
+  }
+}
+
+/* FRESH START - Simple viewport handling */
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+
+
+/* Prevent content overflow on small screens */
+@media (max-width: 640px) {
+  .data-table-container {
+    max-width: 100vw;
+  }
+}
+
+/* Smooth transitions for resize events - optimized for performance */
+* {
+  transition-property: padding, margin, height, width;
+  transition-duration: 0s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Re-enable transitions after initial load with GPU acceleration */
+.transitions-enabled * {
+  transition-duration: 0.15s;
+  will-change: auto;
+}
+
+/* Enhanced smooth transitions for sidebar and content */
+[data-slot="sidebar-inset"],
+[data-slot="sidebar-container"],
+[data-slot="sidebar-gap"] {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure full height coverage without gaps */
+#__next,
+[data-slot="sidebar-provider"] {
+  height: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Performance optimization */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Smooth content reflow when sidebar opens/closes */
+.sidebar-transition {
+  transition: margin 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark {
+  --background: #0d1117;
+  --foreground: #e6edf3;
+  --card: #161b22;
+  --card-foreground: #e6edf3;
+  --popover: #161b22;
+  --popover-foreground: #e6edf3;
+  --primary: #2f81f7;
+  --primary-foreground: #ffffff;
+  --secondary: #6e7681;
+  --secondary-foreground: #ffffff;
+  --muted: #161b22;
+  --muted-foreground: #7d8590;
+  --accent: #1c2d41;
+  --accent-foreground: #58a6ff;
+  --destructive: #f85149;
+  --destructive-foreground: #ffffff;
+  --border: #30363d;
+  --input: #0d1117;
+  --ring: #58a6ff;
+  --chart-1: #58a6ff;
+  --chart-2: #3fb950;
+  --chart-3: #d29922;
+  --chart-4: #a371f7;
+  --chart-5: #f85149;
+  --sidebar: #0d1117;
+  --sidebar-foreground: #e6edf3;
+  --sidebar-primary: #58a6ff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1c2d41;
+  --sidebar-accent-foreground: #58a6ff;
+  --sidebar-border: #30363d;
+  --sidebar-ring: #58a6ff;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+  --radius: 0.8rem;
+  --shadow-x: 0px;
+  --shadow-y: 2px;
+  --shadow-blur: 0px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0;
+}
+
+/* Theme: Zinc */
+.theme-zinc {
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #52525b;
+  --accent: #e4e4e7;
+  --accent-foreground: #18181b;
+  --ring: #18181b;
+}
+
+.dark.theme-zinc {
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+  --secondary: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --ring: #fafafa;
+}
+
+/* Theme: Slate */
+.theme-slate {
+  --primary: #0f172a;
+  --primary-foreground: #f8fafc;
+  --secondary: #475569;
+  --accent: #e2e8f0;
+  --accent-foreground: #0f172a;
+  --ring: #0f172a;
+}
+
+.dark.theme-slate {
+  --primary: #f8fafc;
+  --primary-foreground: #0f172a;
+  --secondary: #94a3b8;
+  --accent: #1e293b;
+  --accent-foreground: #f8fafc;
+  --ring: #f8fafc;
+}
+
+/* Theme: Stone */
+.theme-stone {
+  --primary: #1c1917;
+  --primary-foreground: #fafaf9;
+  --secondary: #57534e;
+  --accent: #e7e5e4;
+  --accent-foreground: #1c1917;
+  --ring: #1c1917;
+}
+
+.dark.theme-stone {
+  --primary: #fafaf9;
+  --primary-foreground: #1c1917;
+  --secondary: #a8a29e;
+  --accent: #292524;
+  --accent-foreground: #fafaf9;
+  --ring: #fafaf9;
+}
+
+/* Theme: Gray */
+.theme-gray {
+  --primary: #111827;
+  --primary-foreground: #f9fafb;
+  --secondary: #4b5563;
+  --accent: #e5e7eb;
+  --accent-foreground: #111827;
+  --ring: #111827;
+}
+
+.dark.theme-gray {
+  --primary: #f9fafb;
+  --primary-foreground: #111827;
+  --secondary: #9ca3af;
+  --accent: #1f2937;
+  --accent-foreground: #f9fafb;
+  --ring: #f9fafb;
+}
+
+/* Theme: Blue */
+.theme-blue {
+  --primary: #1e40af;
+  --primary-foreground: #eff6ff;
+  --secondary: #3b82f6;
+  --accent: #dbeafe;
+  --accent-foreground: #1e40af;
+  --ring: #3b82f6;
+}
+
+.dark.theme-blue {
+  --primary: #60a5fa;
+  --primary-foreground: #1e3a8a;
+  --secondary: #3b82f6;
+  --accent: #1e3a8a;
+  --accent-foreground: #dbeafe;
+  --ring: #60a5fa;
+}
+
+/* Theme: Green */
+.theme-green {
+  --primary: #15803d;
+  --primary-foreground: #f0fdf4;
+  --secondary: #22c55e;
+  --accent: #dcfce7;
+  --accent-foreground: #15803d;
+  --ring: #22c55e;
+}
+
+.dark.theme-green {
+  --primary: #4ade80;
+  --primary-foreground: #14532d;
+  --secondary: #22c55e;
+  --accent: #14532d;
+  --accent-foreground: #dcfce7;
+  --ring: #4ade80;
+}
+
+/* Theme: Orange */
+.theme-orange {
+  --primary: #c2410c;
+  --primary-foreground: #fff7ed;
+  --secondary: #f97316;
+  --accent: #ffedd5;
+  --accent-foreground: #c2410c;
+  --ring: #f97316;
+}
+
+.dark.theme-orange {
+  --primary: #fb923c;
+  --primary-foreground: #7c2d12;
+  --secondary: #f97316;
+  --accent: #7c2d12;
+  --accent-foreground: #ffedd5;
+  --ring: #fb923c;
+}
+
+/* Theme: Rose */
+.theme-rose {
+  --primary: #be123c;
+  --primary-foreground: #fff1f2;
+  --secondary: #f43f5e;
+  --accent: #ffe4e6;
+  --accent-foreground: #be123c;
+  --ring: #f43f5e;
+}
+
+.dark.theme-rose {
+  --primary: #fb7185;
+  --primary-foreground: #881337;
+  --secondary: #f43f5e;
+  --accent: #881337;
+  --accent-foreground: #ffe4e6;
+  --ring: #fb7185;
+}
+
+/* Theme: Red */
+.theme-red {
+  --primary: #b91c1c;
+  --primary-foreground: #fef2f2;
+  --secondary: #ef4444;
+  --accent: #fee2e2;
+  --accent-foreground: #b91c1c;
+  --ring: #ef4444;
+}
+
+.dark.theme-red {
+  --primary: #f87171;
+  --primary-foreground: #7f1d1d;
+  --secondary: #ef4444;
+  --accent: #7f1d1d;
+  --accent-foreground: #fee2e2;
+  --ring: #f87171;
+}
+
+/* Theme: Yellow */
+.theme-yellow {
+  --primary: #a16207;
+  --primary-foreground: #fefce8;
+  --secondary: #eab308;
+  --accent: #fef9c3;
+  --accent-foreground: #a16207;
+  --ring: #eab308;
+}
+
+.dark.theme-yellow {
+  --primary: #facc15;
+  --primary-foreground: #713f12;
+  --secondary: #eab308;
+  --accent: #713f12;
+  --accent-foreground: #fef9c3;
+  --ring: #facc15;
+}
+
+/* Theme: Violet */
+.theme-violet {
+  --primary: #6d28d9;
+  --primary-foreground: #faf5ff;
+  --secondary: #8b5cf6;
+  --accent: #ede9fe;
+  --accent-foreground: #6d28d9;
+  --ring: #8b5cf6;
+}
+
+.dark.theme-violet {
+  --primary: #a78bfa;
+  --primary-foreground: #4c1d95;
+  --secondary: #8b5cf6;
+  --accent: #4c1d95;
+  --accent-foreground: #ede9fe;
+  --ring: #a78bfa;
+  --shadow-color: rgba(29,161,242,0.25);
+  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Leaflet Map Styles */
+.leaflet-map {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+  z-index: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure map container responds to sidebar changes */
+.leaflet-container {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth tile loading */
+.map-tiles {
+  transition: opacity 0.4s ease-in-out;
+}
+
+/* Smooth zoom transitions */
+.leaflet-zoom-animated {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Smooth marker animations */
+.leaflet-marker-icon {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              opacity 0.3s ease-in-out !important;
+}
+
+.leaflet-marker-icon:hover {
+  transform: scale(1.15) translateY(-5px);
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+}
+
+/* Smooth popup animations */
+.leaflet-popup {
+  animation: popupFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 
+              0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.leaflet-popup-content-wrapper:hover {
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15), 
+              0 10px 15px -8px rgba(0, 0, 0, 0.15);
+}
+
+.map-popup {
+  padding: 0.5rem;
+}
+
+.popup-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.popup-details {
+  font-size: 0.875rem;
+}
+
+.popup-item {
+  margin: 0.25rem 0;
+  transition: transform 0.2s ease;
+}
+
+.popup-item:hover {
+  transform: translateX(2px);
+}
+
+.popup-item strong {
+  font-weight: 500;
+  margin-right: 0.25rem;
+}
+
+/* Smooth panning */
+.leaflet-pan-anim .leaflet-tile-container {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade animation for tiles */
+.leaflet-tile {
+  opacity: 0;
+  animation: tileFadeIn 0.3s ease-in-out forwards;
+}
+
+@keyframes tileFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+/* Professional animations and transitions */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(59, 130, 246, 0);
+  }
+}
+
+@keyframes collapsible-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.animate-collapsible-down {
+  animation: collapsible-down 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-collapsible-up {
+  animation: collapsible-up 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.3);
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+}
+
+/* Smooth transitions for all interactive elements */
+button, a, input, select, textarea {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Force sticky header positioning for tables */
+.data-table-container {
+  position: relative;
+  overflow: auto;
+}
+
+.data-table-container thead {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.data-table-container thead tr {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.data-table-container thead th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: hsl(var(--muted) / 0.5);
+  backdrop-filter: blur(8px);
+  border-bottom: 2px solid hsl(var(--primary) / 0.1);
+}
