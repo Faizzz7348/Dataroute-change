@@ -72,7 +72,7 @@ Baca fail **SETUP-DATA-MELAYU.md** untuk panduan ringkas!
 
 1. Jalankan: `npm run dev`
 2. Buka: http://localhost:3000
-3. Klik sidebar "Route VM"
+3. Klik sidebar "Route List"
 4. Test:
    - Klik "KL 7 - 3PVK04" → Should show codes 101-105
    - Klik "SL 1 - 3AVS01" → Should show codes 201-205

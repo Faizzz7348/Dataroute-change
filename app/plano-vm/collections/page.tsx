@@ -51,7 +51,7 @@ export default function CollectionsPage() {
         {collections.map((collection) => (
           <div 
             key={collection.id}
-            className="group cursor-pointer"
+            className="group cursor-pointer max-w-80 mx-auto w-full"
           >
             <div className="relative aspect-video rounded-lg overflow-hidden bg-muted border">
               <Image 

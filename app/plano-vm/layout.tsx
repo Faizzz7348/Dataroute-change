@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sidebar"
 
 const tabs = [
-  { id: "gallery", name: "Gallery", href: "/plano-vm" },
+  { id: "gallery", name: "Gallery", href: "/plano-vm/gallery" },
   { id: "projects", name: "Projects", href: "/plano-vm/projects" },
   { id: "collections", name: "Collections", href: "/plano-vm/collections" },
 ]
@@ -71,17 +71,24 @@ export default function PlanoVMLayout({
           {/* Page Tabs */}
           <div className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex items-center gap-2 py-3 px-4">
-              {tabs.map((tab) => (
-                <Link key={tab.id} href={tab.href}>
-                  <Button
-                    variant={pathname === tab.href ? "secondary" : "ghost"}
-                    size="sm"
-                    className="rounded-full px-6"
-                  >
-                    {tab.name}
-                  </Button>
-                </Link>
-              ))}
+              {tabs.map((tab) => {
+                const isActive = 
+                  tab.href === "/plano-vm/gallery" 
+                    ? pathname === "/plano-vm/gallery" || pathname === "/plano-vm"
+                    : pathname === tab.href
+                
+                return (
+                  <Link key={tab.id} href={tab.href}>
+                    <Button
+                      variant={isActive ? "secondary" : "ghost"}
+                      size="sm"
+                      className="rounded-full px-6"
+                    >
+                      {tab.name}
+                    </Button>
+                  </Link>
+                )
+              })}
             </div>
           </div>
 

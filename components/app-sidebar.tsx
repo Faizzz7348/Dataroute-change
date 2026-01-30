@@ -109,6 +109,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [colorTheme, setColorTheme] = React.useState<string>("default")
   const [navData, setNavData] = React.useState<NavMain[]>(data.navMain)
   const [openMenu, setOpenMenu] = React.useState<string | null>(null)
+  const openMenuRef = React.useRef<string | null>(null) // Track the actual state to prevent loops
   const [settingsOpen, setSettingsOpen] = React.useState(false)
   const [searchQuery, setSearchQuery] = React.useState("")
   const [routesKey, setRoutesKey] = React.useState(0) // For forcing re-fetch
@@ -298,21 +299,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       setColorTheme(savedTheme)
     }
     
-    // Load open menu state from localStorage
+    // Load open menu state from localStorage (only on initial mount)
     const savedOpenMenu = localStorage.getItem('openMenu')
     if (savedOpenMenu) {
+      openMenuRef.current = savedOpenMenu
       setOpenMenu(savedOpenMenu)
     }
   }, [])
   
   // Save open menu state to localStorage
   React.useEffect(() => {
+    // Only save after component has been initialized to avoid infinite loops
+    if (!isInitialized) return
+    
     if (openMenu) {
       localStorage.setItem('openMenu', openMenu)
     } else {
       localStorage.removeItem('openMenu')
     }
-  }, [openMenu])
+  }, [openMenu, isInitialized])
 
   const handleEditModeChange = async (mode: boolean) => {
     // If turning OFF edit mode and has unsaved changes, show confirmation
@@ -452,7 +457,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SearchForm onSearch={setSearchQuery} />
         </SidebarHeader>
         
-        <SidebarContent className="flex-1 overflow-y-auto min-h-0 pl-safe">
+        <SidebarContent 
+          className="flex-1 overflow-y-auto min-h-0 pl-safe"
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+        >
           <SidebarGroup>
             <SidebarMenu>
               {navData.map((item) => {
@@ -462,15 +471,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 ) || []
                 console.log('Rendering menu item:', item.title, 'items count:', filteredItems.length)
                 
-                // Show Route VM menu even if empty (for Add New Route button)
-                const shouldShowMenu = filteredItems.length > 0 || (item.title === "Route VM" && isEditMode)
+                // Show Route List menu even if empty (for Add New Route button)
+                const shouldShowMenu = filteredItems.length > 0 || (item.title === "Route List" && isEditMode)
                 
                 return shouldShowMenu ? (
                   <Collapsible
                     key={item.title}
                     open={openMenu === item.title}
                     onOpenChange={(isOpen) => {
-                      setOpenMenu(isOpen ? item.title : null)
+                      // Prevent rapid toggling by checking if value actually changed
+                      const newValue = isOpen ? item.title : null
+                      if (openMenuRef.current !== newValue) {
+                        openMenuRef.current = newValue
+                        requestAnimationFrame(() => {
+                          setOpenMenu(newValue)
+                        })
+                      }
                     }}
                     className="group/collapsible"
                   >
@@ -482,7 +498,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               className="h-4 w-4 flex items-center justify-center"
                               style={{
                                 color: item.title === "Home" ? "#3b82f6" : 
-                                       item.title === "Route VM" ? "#22c55e" : undefined
+                                       item.title === "Route List" ? "#22c55e" : undefined
                               }}
                             >
                               <Icon className="h-full w-full" />
@@ -514,8 +530,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               </SidebarMenuSubItem>
                             )
                           })}
-                          {/* Add Route Button - Only show in edit mode for Route VM */}
-                          {isEditMode && item.title === "Route VM" && (
+                          {/* Add Route Button - Only show in edit mode for Route List */}
+                          {isEditMode && item.title === "Route List" && (
                             <SidebarMenuSubItem>
                               <SidebarMenuSubButton 
                                 onClick={() => openAddRouteDialog(item.title)}

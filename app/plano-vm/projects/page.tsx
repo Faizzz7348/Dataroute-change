@@ -65,7 +65,7 @@ export default function ProjectsPage() {
                 {project.images.map((image) => (
                   <div 
                     key={image.id} 
-                    className="flex-shrink-0 w-72 snap-start group cursor-pointer"
+                    className="flex-shrink-0 w-80 snap-start group cursor-pointer"
                   >
                     <div className="relative aspect-video rounded-lg overflow-hidden bg-muted border">
                       <Image 
@@ -84,7 +84,7 @@ export default function ProjectsPage() {
                 ))}
                 
                 {/* Add Image Card */}
-                <div className="flex-shrink-0 w-72 snap-start">
+                <div className="flex-shrink-0 w-80 snap-start">
                   <div className="relative aspect-video rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50 bg-muted/50 flex items-center justify-center cursor-pointer transition-colors">
                     <div className="text-center">
                       <Plus className="w-8 h-8 mx-auto text-muted-foreground mb-2" />

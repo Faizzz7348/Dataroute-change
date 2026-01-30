@@ -182,7 +182,7 @@ function Sidebar({
 
   if (isMobile) {
     return (
-      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+      <Sheet open={openMobile} onOpenChange={setOpenMobile} modal={false} {...props}>
         <SheetContent
           data-sidebar="sidebar"
           data-slot="sidebar"
@@ -194,6 +194,17 @@ function Sidebar({
             } as React.CSSProperties
           }
           side={side}
+          onPointerDownOutside={(e) => {
+            // Prevent closing when scrolling inside sidebar
+            e.preventDefault()
+          }}
+          onInteractOutside={(e) => {
+            // Only close when clicking outside, not scrolling
+            const target = e.target as HTMLElement
+            if (target.closest('[data-sidebar="sidebar"]')) {
+              e.preventDefault()
+            }
+          }}
         >
           <SheetHeader className="sr-only">
             <SheetTitle>Sidebar</SheetTitle>

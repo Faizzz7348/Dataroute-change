@@ -69,6 +69,14 @@ function SheetContent({
             "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
           className
         )}
+        onTouchStart={(e) => {
+          // Prevent touch events from closing the sheet during scroll
+          e.stopPropagation()
+        }}
+        onTouchMove={(e) => {
+          // Allow scrolling inside sheet without closing
+          e.stopPropagation()
+        }}
         {...props}
       >
         {children}

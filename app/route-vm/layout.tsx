@@ -54,7 +54,7 @@ export default function RouteVMLayout({
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Route VM</BreadcrumbPage>
+                <BreadcrumbPage>Route List</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
